@@ -24,8 +24,9 @@ Reconocimiento
 IP objetivo: 10.10.11.58
 
 Escaneo de puertos
-
+```bash
 nmap -p- -n -Pn --min-rate 5000 10.10.11.58 -oG allPorts
+```
 Se detectan los puertos abiertos y se guarda el resultado en allPorts. Luego, usando ExtractPorts, copiamos los puertos abiertos al portapapeles.
 
 

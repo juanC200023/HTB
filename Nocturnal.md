@@ -3,7 +3,7 @@
 ![HTB Logo](img/htb_logo.png)
 
 ## Información
-- **Dificultad:** Medium 🟠
+- **Dificultad:** Easy
 - **Sistema Operativo:** Linux 🐧
 - **Categoría:** Web / Privilege Escalation
 
@@ -73,7 +73,7 @@ Agregamos al `/etc/hosts`:
 - Nos logueamos 
 - Nos permite cargar un archivo
 - Intentamos cargar un hola.txt y lo interceptamos con Burpsuite.
--Nos sale esto
+img/upload_txt_burp.png
 
 - Luego probamos cambiar el .txt por .pdf 
 - Nos muestra

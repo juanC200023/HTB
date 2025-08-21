@@ -73,7 +73,7 @@ Agregamos al `/etc/hosts`:
 - Nos logueamos 
 - Nos permite cargar un archivo
 - Intentamos cargar un hola.txt y lo interceptamos con Burpsuite.
-https://github.com/juanC200023/HTB/blob/ee7d1979b97139464efd66e94402ba5c367ac25c/img/upload_txt_burp.png
+![Carga TXT Burp](img/upload_txt_burp.png)
 
 - Luego probamos cambiar el .txt por .pdf 
 - Nos muestra
@@ -94,11 +94,8 @@ Total requests: 8295455
 ID           Response   Lines    Word       Chars       Payload  
 =================================================================
 
-000000039:   200        128 L    248 W      3106 Ch     "jason"  
-000000006:   200        128 L    253 W      3457 Ch     "john"   
+000000006:   200        128 L    253 W      3457 Ch     "juanc"   
 000000002:   200        128 L    247 W      3037 Ch     "admin"  
-000000106:   200        128 L    248 W      3110 Ch     "letmein"
-000000154:   200        128 L    248 W      3108 Ch     "hello"  
 000000194:   200        128 L    248 W      3113 Ch     "amanda" 
 
 - Vemos un usuario amanda que es el que nos interesa.

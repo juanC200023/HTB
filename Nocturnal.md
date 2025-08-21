@@ -73,7 +73,7 @@ Agregamos al `/etc/hosts`:
 - Nos logueamos 
 - Nos permite cargar un archivo
 - Intentamos cargar un hola.txt y lo interceptamos con Burpsuite.
-img/upload_txt_burp.png
+https://github.com/juanC200023/HTB/blob/ee7d1979b97139464efd66e94402ba5c367ac25c/img/upload_txt_burp.png
 
 - Luego probamos cambiar el .txt por .pdf 
 - Nos muestra
